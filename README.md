@@ -18,6 +18,7 @@ npm run dev
 3. Editor de exercício (UI)
 4. Player integrado com AlphaTab (src/player/TabViewer.tsx)
 5. Persistência simples (localStorage)
+5.5. Treino de ritmo por teclado (barra de espaço) — feito (src/treino/)
 6. Captura de microfone
 7. Detector de onset
 8. Comparador de tempo + feedback

@@ -1,20 +1,37 @@
 import { useEffect, useRef, useState } from 'react';
 import * as alphaTab from '@coderline/alphatab';
+import type { Exercicio } from '../editor/types';
+import { DestaquePartitura } from '../treino/DestaquePartitura';
+import { LinhaDoTempo } from '../treino/LinhaDoTempo';
+import { ResumoTreino } from '../treino/ResumoTreino';
+import { useTreinoRitmo } from '../treino/useTreinoRitmo';
 import './TabViewer.css';
 
 interface TabViewerProps {
   alphaTex: string;
+  exercicio: Exercicio;
 }
 
-export function TabViewer({ alphaTex }: TabViewerProps) {
+type ModoFeedback = 'linha-do-tempo' | 'destaque-partitura' | 'resumo';
+
+export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<alphaTab.AlphaTabApi | null>(null);
+  const tocandoRef = useRef(false);
   const [playerPronto, setPlayerPronto] = useState(false);
   const [tocando, setTocando] = useState(false);
   const [totalCompassos, setTotalCompassos] = useState(0);
   const [compassoAtivo, setCompassoAtivo] = useState(0);
   const [progressoCompasso, setProgressoCompasso] = useState(0);
   const [repetindo, setRepetindo] = useState(false);
+  const [score, setScore] = useState<alphaTab.model.Score | null>(null);
+
+  const [modoTreino, setModoTreino] = useState(false);
+  const [modoFeedback, setModoFeedback] = useState<ModoFeedback>('linha-do-tempo');
+  const [silencioso, setSilencioso] = useState(false);
+  const [tempoAtualMs, setTempoAtualMs] = useState(0);
+
+  const treino = useTreinoRitmo({ ativo: modoTreino, exercicio });
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -33,18 +50,27 @@ export function TabViewer({ alphaTex }: TabViewerProps) {
 
     const removerPlayerReady = api.playerReady.on(() => setPlayerPronto(true));
     const removerPlayerStateChanged = api.playerStateChanged.on((args) => {
-      setTocando(args.state === alphaTab.synth.PlayerState.Playing);
+      tocandoRef.current = args.state === alphaTab.synth.PlayerState.Playing;
+      setTocando(tocandoRef.current);
       if (args.stopped) {
         setCompassoAtivo(0);
         setProgressoCompasso(0);
+        setTempoAtualMs(0);
+        treino.reiniciar();
       }
     });
     const removerScoreLoaded = api.scoreLoaded.on((score) => {
       setTotalCompassos(score.masterBars.length);
       setCompassoAtivo(0);
       setProgressoCompasso(0);
+      setScore(score);
     });
     const removerPositionChanged = api.playerPositionChanged.on((args) => {
+      setTempoAtualMs(args.currentTime);
+      if (tocandoRef.current) {
+        treino.sincronizarTempoAtual(args.currentTime);
+      }
+
       const masterBars = api.score?.masterBars;
       if (!masterBars) return;
       const indice = masterBars.findIndex((compasso) => {
@@ -70,7 +96,9 @@ export function TabViewer({ alphaTex }: TabViewerProps) {
       setTotalCompassos(0);
       setCompassoAtivo(0);
       setProgressoCompasso(0);
+      setScore(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -82,6 +110,12 @@ export function TabViewer({ alphaTex }: TabViewerProps) {
       apiRef.current.isLooping = repetindo;
     }
   }, [repetindo]);
+
+  useEffect(() => {
+    if (apiRef.current) {
+      apiRef.current.masterVolume = modoTreino && silencioso ? 0 : 1;
+    }
+  }, [modoTreino, silencioso]);
 
   return (
     <div className="tab-viewer">
@@ -103,7 +137,81 @@ export function TabViewer({ alphaTex }: TabViewerProps) {
         </label>
         {!playerPronto && <span className="tab-viewer__status">Carregando player…</span>}
       </div>
-      <div ref={containerRef} className="tab-viewer__tab" />
+
+      <div className="tab-viewer__treino-controles">
+        <label>
+          <input
+            type="checkbox"
+            checked={modoTreino}
+            onChange={(e) => setModoTreino(e.target.checked)}
+            disabled={!playerPronto || tocando}
+          />
+          Treinar ritmo (aperte espaço no tempo)
+        </label>
+
+        {modoTreino && (
+          <>
+            <div className="tab-viewer__treino-modos">
+              <label>
+                <input
+                  type="radio"
+                  name="modo-feedback"
+                  checked={modoFeedback === 'linha-do-tempo'}
+                  onChange={() => setModoFeedback('linha-do-tempo')}
+                />
+                Linha do tempo
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="modo-feedback"
+                  checked={modoFeedback === 'destaque-partitura'}
+                  onChange={() => setModoFeedback('destaque-partitura')}
+                />
+                Destacar na partitura
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="modo-feedback"
+                  checked={modoFeedback === 'resumo'}
+                  onChange={() => setModoFeedback('resumo')}
+                />
+                Só resumo
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={silencioso}
+                onChange={(e) => setSilencioso(e.target.checked)}
+                disabled={tocando}
+              />
+              Silencioso (sem som, só o tempo)
+            </label>
+          </>
+        )}
+      </div>
+
+      <div className="tab-viewer__tab-wrapper">
+        <div ref={containerRef} className="tab-viewer__tab" />
+        {modoTreino && modoFeedback === 'destaque-partitura' && apiRef.current && score && (
+          <DestaquePartitura api={apiRef.current} score={score} resultados={treino.resultados} />
+        )}
+      </div>
+
+      {modoTreino && modoFeedback === 'linha-do-tempo' && (
+        <LinhaDoTempo
+          esperados={treino.esperados}
+          resultados={treino.resultados}
+          duracaoTotalMs={treino.duracaoTotalMs}
+          progressoMs={tempoAtualMs}
+        />
+      )}
+
+      {modoTreino && <ResumoTreino resultados={treino.resultados} />}
+
       {totalCompassos > 0 && (
         <div className="tab-viewer__progresso">
           <span className="tab-viewer__progresso-info">

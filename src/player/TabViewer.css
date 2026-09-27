@@ -25,6 +25,10 @@
   color: var(--text);
 }
 
+.tab-viewer__tab-wrapper {
+  position: relative;
+}
+
 .tab-viewer__tab {
   border: 1px solid var(--border);
   border-radius: 8px;
