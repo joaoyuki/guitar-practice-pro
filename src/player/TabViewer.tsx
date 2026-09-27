@@ -5,7 +5,10 @@ import { DestaquePartitura } from '../treino/DestaquePartitura';
 import { LinhaDoTempo } from '../treino/LinhaDoTempo';
 import { ResumoTreino } from '../treino/ResumoTreino';
 import { useTreinoRitmo } from '../treino/useTreinoRitmo';
+import { agendarContagem, obterAudioContext } from './contagem';
 import './TabViewer.css';
+
+const QUANTIDADE_CONTAGEM = 3;
 
 interface TabViewerProps {
   alphaTex: string;
@@ -19,6 +22,8 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const apiRef = useRef<alphaTab.AlphaTabApi | null>(null);
   const tocandoRef = useRef(false);
   const foiParadoRef = useRef(true);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const contagemTimeoutRef = useRef<number | null>(null);
   const [playerPronto, setPlayerPronto] = useState(false);
   const [tocando, setTocando] = useState(false);
   const [totalCompassos, setTotalCompassos] = useState(0);
@@ -32,6 +37,8 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const [silencioso, setSilencioso] = useState(false);
   const [tempoAtualMs, setTempoAtualMs] = useState(0);
   const [resumoFechado, setResumoFechado] = useState(false);
+  const [contarAteTres, setContarAteTres] = useState(false);
+  const [contando, setContando] = useState(false);
 
   const treino = useTreinoRitmo({ ativo: modoTreino, exercicio });
 
@@ -125,13 +132,50 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
     }
   }, [modoTreino, silencioso]);
 
+  useEffect(() => {
+    return () => {
+      if (contagemTimeoutRef.current !== null) {
+        window.clearTimeout(contagemTimeoutRef.current);
+      }
+      audioCtxRef.current?.close();
+    };
+  }, []);
+
+  function aoClicarTocarPausar() {
+    if (!apiRef.current) return;
+    if (tocando || !contarAteTres) {
+      apiRef.current.playPause();
+      return;
+    }
+
+    const ctx = obterAudioContext(audioCtxRef.current);
+    audioCtxRef.current = ctx;
+    void ctx.resume();
+    setContando(true);
+    const duracaoMs = agendarContagem(ctx, exercicio.bpm, QUANTIDADE_CONTAGEM);
+    contagemTimeoutRef.current = window.setTimeout(() => {
+      contagemTimeoutRef.current = null;
+      setContando(false);
+      apiRef.current?.playPause();
+    }, duracaoMs);
+  }
+
+  function aoClicarParar() {
+    if (contagemTimeoutRef.current !== null) {
+      window.clearTimeout(contagemTimeoutRef.current);
+      contagemTimeoutRef.current = null;
+      setContando(false);
+    }
+    apiRef.current?.stop();
+  }
+
   return (
     <div className="tab-viewer">
       <div className="tab-viewer__controles">
-        <button type="button" onClick={() => apiRef.current?.playPause()} disabled={!playerPronto}>
-          {tocando ? 'Pausar' : 'Tocar'}
+        <button type="button" onClick={aoClicarTocarPausar} disabled={!playerPronto || contando}>
+          {contando ? 'Contando…' : tocando ? 'Pausar' : 'Tocar'}
         </button>
-        <button type="button" onClick={() => apiRef.current?.stop()} disabled={!playerPronto}>
+        <button type="button" onClick={aoClicarParar} disabled={!playerPronto}>
           Parar
         </button>
         <label className="tab-viewer__repetir">
@@ -143,6 +187,15 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
           />
           Repetir
         </label>
+        <label className="tab-viewer__repetir">
+          <input
+            type="checkbox"
+            checked={contarAteTres}
+            onChange={(e) => setContarAteTres(e.target.checked)}
+            disabled={!playerPronto || tocando || contando}
+          />
+          Contar até 3
+        </label>
         {!playerPronto && <span className="tab-viewer__status">Carregando player…</span>}
       </div>
 
@@ -152,7 +205,7 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
             type="checkbox"
             checked={modoTreino}
             onChange={(e) => setModoTreino(e.target.checked)}
-            disabled={!playerPronto || tocando}
+            disabled={!playerPronto || tocando || contando}
           />
           Treinar ritmo (aperte espaço no tempo)
         </label>
