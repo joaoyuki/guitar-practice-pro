@@ -36,6 +36,15 @@
   overflow-x: auto;
 }
 
+.tab-viewer__tab .at-cursor-bar {
+  background: rgba(255, 242, 0, 0.15);
+}
+
+.tab-viewer__tab .at-cursor-beat {
+  background: var(--accent, #0078d4);
+  width: 3px;
+}
+
 .tab-viewer__progresso {
   margin-top: 1rem;
 }
