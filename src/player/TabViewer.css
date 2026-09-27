@@ -1,0 +1,58 @@
+.tab-viewer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.tab-viewer__controles {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.tab-viewer__status {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.tab-viewer__repetir {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.tab-viewer__tab {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 120px;
+  overflow-x: auto;
+}
+
+.tab-viewer__progresso {
+  margin-top: 1rem;
+}
+
+.tab-viewer__progresso-info {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.tab-viewer__progresso-barra {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.tab-viewer__progresso-preenchimento {
+  height: 100%;
+  background: var(--accent);
+  transition: width 100ms linear;
+}

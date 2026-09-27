@@ -1,0 +1,7 @@
+.app__sem-exercicio {
+  max-width: 720px;
+  margin: 1.5rem auto;
+  padding: 0 1.5rem;
+  color: var(--text);
+  text-align: center;
+}

@@ -1,0 +1,102 @@
+.exercicio-form {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.exercicio-form__metadados {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.exercicio-form__metadados label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.exercicio-form__formula {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.exercicio-form__formula input {
+  width: 3.5rem;
+}
+
+.exercicio-form__compassos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.exercicio-form__compasso {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.exercicio-form__compasso legend {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  color: var(--text-h);
+  padding: 0 0.4rem;
+}
+
+.exercicio-form__nota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.exercicio-form__nota:last-of-type {
+  border-bottom: none;
+}
+
+.exercicio-form__nota label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.exercicio-form__nota input[type='number'] {
+  width: 4rem;
+}
+
+.exercicio-form__remover {
+  font-size: 0.8rem;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+}
+
+.exercicio-form__preview {
+  margin-top: 1.5rem;
+}
+
+.exercicio-form__preview pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  color: var(--text-h);
+}
