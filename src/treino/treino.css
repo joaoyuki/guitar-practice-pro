@@ -110,6 +110,18 @@
   background: var(--code-bg);
   border: 1px solid var(--border);
   font-size: 0.9rem;
+  position: relative;
+}
+
+.resumo-treino__fechar {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text);
+  padding: 0 0.2rem;
 }
 
 .resumo-treino__acerto {

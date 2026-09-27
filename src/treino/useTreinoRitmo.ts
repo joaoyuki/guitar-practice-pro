@@ -75,11 +75,17 @@ export function useTreinoRitmo({ ativo, exercicio }: UseTreinoRitmoOptions) {
     return () => window.removeEventListener('keydown', aoApertarTecla);
   }, [ativo, estimarTempoAtualMs, avaliarAte]);
 
+  /** Avalia todas as notas do exercício, mesmo as que ainda não tinham passado pela janela de tolerância. */
+  const finalizar = useCallback(() => {
+    setResultados(avaliarExecucao(esperadosRef.current, tentativasRef.current));
+  }, []);
+
   return {
     esperados,
     duracaoTotalMs,
     resultados,
     reiniciar,
     sincronizarTempoAtual,
+    finalizar,
   };
 }

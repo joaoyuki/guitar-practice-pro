@@ -18,6 +18,7 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<alphaTab.AlphaTabApi | null>(null);
   const tocandoRef = useRef(false);
+  const foiParadoRef = useRef(true);
   const [playerPronto, setPlayerPronto] = useState(false);
   const [tocando, setTocando] = useState(false);
   const [totalCompassos, setTotalCompassos] = useState(0);
@@ -30,6 +31,7 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const [modoFeedback, setModoFeedback] = useState<ModoFeedback>('linha-do-tempo');
   const [silencioso, setSilencioso] = useState(false);
   const [tempoAtualMs, setTempoAtualMs] = useState(0);
+  const [resumoFechado, setResumoFechado] = useState(false);
 
   const treino = useTreinoRitmo({ ativo: modoTreino, exercicio });
 
@@ -56,7 +58,13 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
         setCompassoAtivo(0);
         setProgressoCompasso(0);
         setTempoAtualMs(0);
+        treino.finalizar();
+        foiParadoRef.current = true;
+      } else if (tocandoRef.current && foiParadoRef.current) {
+        // Começando um treino novo depois de uma parada completa: aí sim limpa o resultado anterior.
+        foiParadoRef.current = false;
         treino.reiniciar();
+        setResumoFechado(false);
       }
     });
     const removerScoreLoaded = api.scoreLoaded.on((score) => {
@@ -210,7 +218,9 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
         />
       )}
 
-      {modoTreino && <ResumoTreino resultados={treino.resultados} />}
+      {modoTreino && !resumoFechado && (
+        <ResumoTreino resultados={treino.resultados} onFechar={() => setResumoFechado(true)} />
+      )}
 
       {totalCompassos > 0 && (
         <div className="tab-viewer__progresso">

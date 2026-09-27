@@ -4,9 +4,10 @@ import './treino.css';
 
 interface ResumoTreinoProps {
   resultados: ResultadoNota[];
+  onFechar: () => void;
 }
 
-export function ResumoTreino({ resultados }: ResumoTreinoProps) {
+export function ResumoTreino({ resultados, onFechar }: ResumoTreinoProps) {
   if (resultados.length === 0) return null;
   const resumo = resumirExecucao(resultados);
 
@@ -19,6 +20,9 @@ export function ResumoTreino({ resultados }: ResumoTreinoProps) {
       {resumo.desvioMedioMs != null && (
         <span className="resumo-treino__detalhe">desvio médio: {Math.round(resumo.desvioMedioMs)}ms</span>
       )}
+      <button type="button" className="resumo-treino__fechar" onClick={onFechar} aria-label="Fechar resumo">
+        ×
+      </button>
     </div>
   );
 }
