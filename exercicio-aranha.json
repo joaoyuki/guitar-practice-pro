@@ -1,0 +1,57 @@
+{
+  "bpm": 120,
+  "formula": [
+    4,
+    4
+  ],
+  "compassos": [
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 5,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 6,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 7,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 8,
+          "duracao": 4
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 5,
+          "casa": 5,
+          "duracao": 4
+        },
+        {
+          "corda": 5,
+          "casa": 6,
+          "duracao": 4
+        },
+        {
+          "corda": 5,
+          "casa": 7,
+          "duracao": 4
+        },
+        {
+          "corda": 5,
+          "casa": 8,
+          "duracao": 4
+        }
+      ]
+    }
+  ]
+}

@@ -100,3 +100,24 @@
   white-space: pre-wrap;
   color: var(--text-h);
 }
+
+.exercicio-form__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exercicio-form__input-arquivo {
+  display: none;
+}
+
+.exercicio-form__erro {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #c0392b;
+  border-radius: 6px;
+  background: rgba(192, 57, 43, 0.1);
+  color: #c0392b;
+  font-size: 0.85rem;
+}
