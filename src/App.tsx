@@ -12,7 +12,7 @@ function App() {
     <main>
       <ExercicioForm onCarregar={setExercicioAtivo} />
       {exercicioAtivo ? (
-        <TabViewer alphaTex={paraAlphaTex(exercicioAtivo)} />
+        <TabViewer alphaTex={paraAlphaTex(exercicioAtivo)} exercicio={exercicioAtivo} />
       ) : (
         <p className="app__sem-exercicio">
           Monte um exercício acima e clique em "Carregar no player".
