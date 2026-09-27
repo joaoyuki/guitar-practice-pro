@@ -5,8 +5,19 @@ notas + figuras rítmicas, playback com AlphaTab controlado por BPM, e (fase
 seguinte) validação de tempo via microfone.
 
 ## Stack
-- React + TypeScript + Vite
-- AlphaTab (@coderline/alphatab) para renderização e playback da tab
+
+### Core
+- [React 19](https://react.dev/) — UI
+- [TypeScript](https://www.typescriptlang.org/) — tipagem estática
+- [Vite](https://vite.dev/) — build tool e dev server
+
+### Áudio/Notação
+- [AlphaTab](https://www.alphatab.net/) (`@coderline/alphatab`) — renderização e playback da tab
+- `@coderline/alphatab-vite` — integração do AlphaTab com Vite
+
+### Testes e qualidade
+- [Vitest](https://vitest.dev/) — testes
+- [oxlint](https://oxc.rs/docs/guide/usage/linter.html) — linter
 
 ## Rodando localmente
 npm install

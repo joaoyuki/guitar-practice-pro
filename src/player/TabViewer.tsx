@@ -52,6 +52,8 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
       player: {
         playerMode: alphaTab.PlayerMode.EnabledSynthesizer,
         soundFont: '/soundfont/sonivox.sf3',
+        enableCursor: true,
+        enableAnimatedBeatCursor: true,
       },
     });
     apiRef.current = api;
