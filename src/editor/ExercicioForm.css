@@ -29,6 +29,16 @@
   width: 3.5rem;
 }
 
+.exercicio-form__acoes-compassos {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.exercicio-form__acoes-compassos button {
+  font-size: 0.8rem;
+}
+
 .exercicio-form__compassos {
   display: flex;
   flex-direction: column;
@@ -49,6 +59,22 @@
   font-weight: 500;
   color: var(--text-h);
   padding: 0 0.4rem;
+}
+
+.exercicio-form__colapsar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.2rem;
+}
+
+.exercicio-form__resumo {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text);
 }
 
 .exercicio-form__nota {

@@ -39,6 +39,7 @@ interface ExercicioFormProps {
 export function ExercicioForm({ onCarregar }: ExercicioFormProps) {
   const [exercicio, setExercicio] = useState<Exercicio>(exercicioInicial);
   const [erroArquivo, setErroArquivo] = useState<string | null>(null);
+  const [compassosColapsados, setCompassosColapsados] = useState<Set<number>>(new Set());
   const inputArquivoRef = useRef<HTMLInputElement>(null);
 
   function atualizar(proximo: Exercicio) {
@@ -86,6 +87,34 @@ export function ExercicioForm({ onCarregar }: ExercicioFormProps) {
       ...exercicio,
       compassos: exercicio.compassos.filter((_, i) => i !== indiceCompasso),
     });
+    setCompassosColapsados((atual) => {
+      const proximo = new Set<number>();
+      atual.forEach((i) => {
+        if (i < indiceCompasso) proximo.add(i);
+        else if (i > indiceCompasso) proximo.add(i - 1);
+      });
+      return proximo;
+    });
+  }
+
+  function alternarColapso(indiceCompasso: number) {
+    setCompassosColapsados((atual) => {
+      const proximo = new Set(atual);
+      if (proximo.has(indiceCompasso)) {
+        proximo.delete(indiceCompasso);
+      } else {
+        proximo.add(indiceCompasso);
+      }
+      return proximo;
+    });
+  }
+
+  function expandirTodos() {
+    setCompassosColapsados(new Set());
+  }
+
+  function colapsarTodos() {
+    setCompassosColapsados(new Set(exercicio.compassos.map((_, i) => i)));
   }
 
   function adicionarNota(indiceCompasso: number) {
@@ -157,121 +186,154 @@ export function ExercicioForm({ onCarregar }: ExercicioFormProps) {
         </label>
       </div>
 
+      {exercicio.compassos.length > 1 && (
+        <div className="exercicio-form__acoes-compassos">
+          <button type="button" onClick={expandirTodos}>
+            expandir todos
+          </button>
+          <button type="button" onClick={colapsarTodos}>
+            recolher todos
+          </button>
+        </div>
+      )}
+
       <div className="exercicio-form__compassos">
-        {exercicio.compassos.map((compasso, indiceCompasso) => (
-          <fieldset key={indiceCompasso} className="exercicio-form__compasso">
-            <legend>
-              Compasso {indiceCompasso + 1}
-              {exercicio.compassos.length > 1 && (
+        {exercicio.compassos.map((compasso, indiceCompasso) => {
+          const colapsado = compassosColapsados.has(indiceCompasso);
+
+          return (
+            <fieldset key={indiceCompasso} className="exercicio-form__compasso">
+              <legend>
                 <button
                   type="button"
-                  className="exercicio-form__remover"
-                  onClick={() => removerCompasso(indiceCompasso)}
+                  className="exercicio-form__colapsar"
+                  onClick={() => alternarColapso(indiceCompasso)}
+                  aria-expanded={!colapsado}
+                  aria-label={colapsado ? 'expandir compasso' : 'recolher compasso'}
                 >
-                  remover compasso
+                  {colapsado ? '▸' : '▾'}
                 </button>
-              )}
-            </legend>
-
-            {compasso.notas.map((nota, indiceNota) => (
-              <div key={indiceNota} className="exercicio-form__nota">
-                <label>
-                  Pausa
-                  <input
-                    type="checkbox"
-                    checked={nota.casa === 'r'}
-                    onChange={(e) =>
-                      atualizarNota(indiceCompasso, indiceNota, {
-                        ...nota,
-                        casa: e.target.checked ? 'r' : 0,
-                      })
-                    }
-                  />
-                </label>
-
-                <label>
-                  Corda
-                  <input
-                    type="number"
-                    min={1}
-                    max={6}
-                    value={nota.corda}
-                    onChange={(e) =>
-                      atualizarNota(indiceCompasso, indiceNota, {
-                        ...nota,
-                        corda: numeroOu(e.target.value, nota.corda),
-                      })
-                    }
-                  />
-                </label>
-
-                <label>
-                  Casa
-                  <input
-                    type="number"
-                    min={0}
-                    max={24}
-                    disabled={nota.casa === 'r'}
-                    value={nota.casa === 'r' ? '' : nota.casa}
-                    onChange={(e) =>
-                      atualizarNota(indiceCompasso, indiceNota, {
-                        ...nota,
-                        casa: numeroOu(e.target.value, nota.casa === 'r' ? 0 : nota.casa),
-                      })
-                    }
-                  />
-                </label>
-
-                <label>
-                  Duração
-                  <select
-                    value={nota.duracao}
-                    onChange={(e) =>
-                      atualizarNota(indiceCompasso, indiceNota, {
-                        ...nota,
-                        duracao: Number(e.target.value) as Duracao,
-                      })
-                    }
-                  >
-                    {DURACOES.map(({ valor, label }) => (
-                      <option key={valor} value={valor}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
-                  Pontuada
-                  <input
-                    type="checkbox"
-                    checked={nota.pontuada ?? false}
-                    onChange={(e) =>
-                      atualizarNota(indiceCompasso, indiceNota, {
-                        ...nota,
-                        pontuada: e.target.checked,
-                      })
-                    }
-                  />
-                </label>
-
-                {compasso.notas.length > 1 && (
+                Compasso {indiceCompasso + 1}
+                {colapsado && (
+                  <span className="exercicio-form__resumo">
+                    {compasso.notas.length} {compasso.notas.length === 1 ? 'nota' : 'notas'}
+                  </span>
+                )}
+                {exercicio.compassos.length > 1 && (
                   <button
                     type="button"
                     className="exercicio-form__remover"
-                    onClick={() => removerNota(indiceCompasso, indiceNota)}
+                    onClick={() => removerCompasso(indiceCompasso)}
                   >
-                    remover nota
+                    remover compasso
                   </button>
                 )}
-              </div>
-            ))}
+              </legend>
 
-            <button type="button" onClick={() => adicionarNota(indiceCompasso)}>
-              + nota
-            </button>
-          </fieldset>
-        ))}
+              {!colapsado && (
+                <>
+                  {compasso.notas.map((nota, indiceNota) => (
+                  <div key={indiceNota} className="exercicio-form__nota">
+                    <label>
+                      Pausa
+                      <input
+                        type="checkbox"
+                        checked={nota.casa === 'r'}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            casa: e.target.checked ? 'r' : 0,
+                          })
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Corda
+                      <input
+                        type="number"
+                        min={1}
+                        max={6}
+                        value={nota.corda}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            corda: numeroOu(e.target.value, nota.corda),
+                          })
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Casa
+                      <input
+                        type="number"
+                        min={0}
+                        max={24}
+                        disabled={nota.casa === 'r'}
+                        value={nota.casa === 'r' ? '' : nota.casa}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            casa: numeroOu(e.target.value, nota.casa === 'r' ? 0 : nota.casa),
+                          })
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Duração
+                      <select
+                        value={nota.duracao}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            duracao: Number(e.target.value) as Duracao,
+                          })
+                        }
+                      >
+                        {DURACOES.map(({ valor, label }) => (
+                          <option key={valor} value={valor}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label>
+                      Pontuada
+                      <input
+                        type="checkbox"
+                        checked={nota.pontuada ?? false}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            pontuada: e.target.checked,
+                          })
+                        }
+                      />
+                    </label>
+
+                    {compasso.notas.length > 1 && (
+                      <button
+                        type="button"
+                        className="exercicio-form__remover"
+                        onClick={() => removerNota(indiceCompasso, indiceNota)}
+                      >
+                        remover nota
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                  <button type="button" onClick={() => adicionarNota(indiceCompasso)}>
+                    + nota
+                  </button>
+                </>
+              )}
+            </fieldset>
+          );
+        })}
       </div>
 
       <button type="button" onClick={adicionarCompasso}>
