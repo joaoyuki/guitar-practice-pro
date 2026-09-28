@@ -4,6 +4,9 @@ import type { Exercicio } from '../editor/types';
 import { DestaquePartitura } from '../treino/DestaquePartitura';
 import { LinhaDoTempo } from '../treino/LinhaDoTempo';
 import { ResumoTreino } from '../treino/ResumoTreino';
+import { AvisoMetronomo } from '../treino/microfone/DicasCaptacao';
+import type { FonteEntrada } from '../treino/microfone/tipos';
+import type { Microfone } from '../treino/microfone/useMicrofone';
 import { useTreinoRitmo } from '../treino/useTreinoRitmo';
 import { agendarContagem, obterAudioContext } from './contagem';
 import './TabViewer.css';
@@ -13,11 +16,13 @@ const QUANTIDADE_CONTAGEM = 3;
 interface TabViewerProps {
   alphaTex: string;
   exercicio: Exercicio;
+  fonteEntrada: FonteEntrada;
+  microfone: Microfone;
 }
 
 type ModoFeedback = 'linha-do-tempo' | 'destaque-partitura' | 'resumo';
 
-export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
+export function TabViewer({ alphaTex, exercicio, fonteEntrada, microfone }: TabViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<alphaTab.AlphaTabApi | null>(null);
   const tocandoRef = useRef(false);
@@ -40,7 +45,13 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
   const [contarAteTres, setContarAteTres] = useState(false);
   const [contando, setContando] = useState(false);
 
-  const treino = useTreinoRitmo({ ativo: modoTreino, exercicio });
+  const treino = useTreinoRitmo({
+    ativo: modoTreino,
+    exercicio,
+    fonte: fonteEntrada,
+    assinarMicrofone: microfone.assinar,
+  });
+  const usandoMicrofone = fonteEntrada === 'microfone';
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -209,7 +220,7 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
             onChange={(e) => setModoTreino(e.target.checked)}
             disabled={!playerPronto || tocando || contando}
           />
-          Treinar ritmo (aperte espaço no tempo)
+          {usandoMicrofone ? 'Treinar ritmo (toque a corda no tempo)' : 'Treinar ritmo (aperte espaço no tempo)'}
         </label>
 
         {modoTreino && (
@@ -253,6 +264,17 @@ export function TabViewer({ alphaTex, exercicio }: TabViewerProps) {
               />
               Silencioso (sem som, só o tempo)
             </label>
+
+            {usandoMicrofone && microfone.estado !== 'ativo' && (
+              <p className="tab-viewer__aviso aviso-microfone">
+                O microfone está desligado. Ligue-o no menu "Entrada do treino" no topo da página.
+              </p>
+            )}
+            {usandoMicrofone && !silencioso && (
+              <div className="tab-viewer__aviso">
+                <AvisoMetronomo />
+              </div>
+            )}
           </>
         )}
       </div>

@@ -8,10 +8,14 @@ import {
   type ResultadoNota,
   type TempoEsperado,
 } from './ritmoEngine';
+import type { FonteEntrada } from './microfone/tipos';
+import type { ToqueMicrofone } from './microfone/useMicrofone';
 
 interface UseTreinoRitmoOptions {
   ativo: boolean;
   exercicio: Exercicio | null;
+  fonte: FonteEntrada;
+  assinarMicrofone: (ouvinte: (toque: ToqueMicrofone) => void) => () => void;
 }
 
 /** Elementos onde a barra de espaço deve continuar com o comportamento padrão (rolar página, marcar checkbox etc). */
@@ -22,7 +26,7 @@ function focoEmCampoDeFormulario(): boolean {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || elemento.hasAttribute('contenteditable');
 }
 
-export function useTreinoRitmo({ ativo, exercicio }: UseTreinoRitmoOptions) {
+export function useTreinoRitmo({ ativo, exercicio, fonte, assinarMicrofone }: UseTreinoRitmoOptions) {
   const [resultados, setResultados] = useState<ResultadoNota[]>([]);
   const esperadosRef = useRef<TempoEsperado[]>([]);
   const tentativasRef = useRef<number[]>([]);
@@ -55,25 +59,38 @@ export function useTreinoRitmo({ ativo, exercicio }: UseTreinoRitmoOptions) {
     [avaliarAte],
   );
 
-  const estimarTempoAtualMs = useCallback(() => {
+  /** Converte um instante de `performance.now()` para o tempo do exercício, usando a última sincronia com o player. */
+  const tempoDoExercicioEm = useCallback((perfMs: number) => {
     const { tempoAudioMs, tempoPerfMs } = sincroniaRef.current;
-    return tempoAudioMs + (performance.now() - tempoPerfMs);
+    return tempoAudioMs + (perfMs - tempoPerfMs);
   }, []);
 
+  /** Registra um toque vindo de qualquer fonte. O toque do microfone chega alguns ms depois de acontecer, por isso o tempo vem de fora. */
+  const registrarTentativa = useCallback(
+    (perfMs: number) => {
+      tentativasRef.current = [...tentativasRef.current, tempoDoExercicioEm(perfMs)];
+      avaliarAte(tempoDoExercicioEm(Math.max(perfMs, performance.now())));
+    },
+    [tempoDoExercicioEm, avaliarAte],
+  );
+
   useEffect(() => {
-    if (!ativo) return;
+    if (!ativo || fonte !== 'teclado') return;
 
     function aoApertarTecla(evento: KeyboardEvent) {
       if (evento.code !== 'Space' || evento.repeat || focoEmCampoDeFormulario()) return;
       evento.preventDefault();
-      const tempoMs = estimarTempoAtualMs();
-      tentativasRef.current = [...tentativasRef.current, tempoMs];
-      avaliarAte(tempoMs);
+      registrarTentativa(performance.now());
     }
 
     window.addEventListener('keydown', aoApertarTecla);
     return () => window.removeEventListener('keydown', aoApertarTecla);
-  }, [ativo, estimarTempoAtualMs, avaliarAte]);
+  }, [ativo, fonte, registrarTentativa]);
+
+  useEffect(() => {
+    if (!ativo || fonte !== 'microfone') return;
+    return assinarMicrofone((toque) => registrarTentativa(toque.perfMs));
+  }, [ativo, fonte, assinarMicrofone, registrarTentativa]);
 
   /** Avalia todas as notas do exercício, mesmo as que ainda não tinham passado pela janela de tolerância. */
   const finalizar = useCallback(() => {
