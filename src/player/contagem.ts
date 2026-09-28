@@ -2,10 +2,10 @@ const MARGEM_INICIAL_SEG = 0.05;
 const FREQUENCIA_HZ = 880;
 const DURACAO_BIPE_SEG = 0.08;
 
-function tocarBipe(ctx: AudioContext, quando: number) {
+export function tocarBipe(ctx: AudioContext, quando: number, frequenciaHz = FREQUENCIA_HZ) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  osc.frequency.value = FREQUENCIA_HZ;
+  osc.frequency.value = frequenciaHz;
   osc.connect(gain);
   gain.connect(ctx.destination);
   gain.gain.setValueAtTime(0.0001, quando);
