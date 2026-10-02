@@ -25,6 +25,11 @@ describe('converterBeat', () => {
     expect(converterBeat(nota)).toBe('0.6.4{d}');
   });
 
+  it('adiciona {tu 3} em notas de tercina e combina com ponto', () => {
+    expect(converterBeat({ corda: 6, casa: 0, duracao: 8, tercina: true })).toBe('0.6.8{tu 3}');
+    expect(converterBeat({ corda: 6, casa: 0, duracao: 8, pontuada: true, tercina: true })).toBe('0.6.8{d tu 3}');
+  });
+
   it('converte uma pausa em r.duração', () => {
     const nota: Nota = { corda: 6, casa: 'r', duracao: 4 };
     expect(converterBeat(nota)).toBe('r.4');
