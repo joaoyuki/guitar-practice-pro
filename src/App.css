@@ -5,3 +5,29 @@
   color: var(--text);
   text-align: center;
 }
+
+.app__abas {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem auto 0;
+  border-bottom: 1px solid var(--border);
+  max-width: 720px;
+}
+
+.app__abas button {
+  font: inherit;
+  font-weight: 600;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  padding: 0.5rem 0.25rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.app__abas button[aria-selected='true'] {
+  color: var(--text-h);
+  border-bottom-color: var(--accent);
+}

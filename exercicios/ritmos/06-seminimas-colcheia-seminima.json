@@ -1,0 +1,105 @@
+{
+  "bpm": 60,
+  "formula": [
+    3,
+    4
+  ],
+  "compassos": [
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 8
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4
+        }
+      ]
+    }
+  ]
+}

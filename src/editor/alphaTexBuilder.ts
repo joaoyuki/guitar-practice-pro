@@ -7,7 +7,8 @@ export function converterNota(nota: Nota): string {
 
 export function converterBeat(nota: Nota): string {
   const beat = `${converterNota(nota)}.${nota.duracao}`;
-  return nota.pontuada ? `${beat}{d}` : beat;
+  const efeitos = [nota.pontuada ? 'd' : null, nota.tercina ? 'tu 3' : null].filter(Boolean);
+  return efeitos.length > 0 ? `${beat}{${efeitos.join(' ')}}` : beat;
 }
 
 export function converterCompasso(compasso: Compasso): string {

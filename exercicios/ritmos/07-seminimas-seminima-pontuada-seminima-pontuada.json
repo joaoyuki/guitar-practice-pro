@@ -1,0 +1,73 @@
+{
+  "bpm": 60,
+  "formula": [
+    3,
+    4
+  ],
+  "compassos": [
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        }
+      ]
+    },
+    {
+      "notas": [
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        },
+        {
+          "corda": 6,
+          "casa": 0,
+          "duracao": 4,
+          "pontuada": true
+        }
+      ]
+    }
+  ]
+}

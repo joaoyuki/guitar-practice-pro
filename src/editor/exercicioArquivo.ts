@@ -27,7 +27,7 @@ function ehObjeto(valor: unknown): valor is Record<string, unknown> {
 
 function validarNota(dados: unknown, contexto: string): Nota {
   if (!ehObjeto(dados)) throw new ErroValidacao(`${contexto}: nota inválida.`);
-  const { corda, casa, duracao, pontuada } = dados;
+  const { corda, casa, duracao, pontuada, tercina } = dados;
 
   if (typeof corda !== 'number' || !Number.isInteger(corda) || corda < CORDA_MIN || corda > CORDA_MAX) {
     throw new ErroValidacao(`${contexto}: corda deve ser um número inteiro entre ${CORDA_MIN} e ${CORDA_MAX}.`);
@@ -42,8 +42,13 @@ function validarNota(dados: unknown, contexto: string): Nota {
     throw new ErroValidacao(`${contexto}: pontuada deve ser verdadeiro ou falso.`);
   }
 
+  if (tercina !== undefined && typeof tercina !== 'boolean') {
+    throw new ErroValidacao(`${contexto}: tercina deve ser verdadeiro ou falso.`);
+  }
+
   const nota: Nota = { corda, casa: casa as number | 'r', duracao: duracao as Duracao };
   if (pontuada) nota.pontuada = true;
+  if (tercina) nota.tercina = true;
   return nota;
 }
 

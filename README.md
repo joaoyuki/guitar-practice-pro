@@ -134,3 +134,7 @@ usando o monitor e o resultado do treino.
 - A calibração mede a latência do microfone e da saída do contexto de captura. A latência do
   próprio alphaTab é considerada igual por usar o mesmo dispositivo de saída.
 - A entrada é mono (primeiro canal do dispositivo).
+
+## Figuras rítmicas
+
+A aba **Figuras rítmicas** (`src/ritmos/`) mostra cada ritmo numa linha do tempo, com clique e som. Os mesmos ritmos estão em `exercicios/ritmos/` (um `.json` por ritmo, 4 compassos na corda 6 solta, 60 BPM) para carregar na aba Exercícios e praticar com o microfone. Para regenerar os arquivos: `npm run gerar:ritmos`. Tercinas usam o campo opcional `"tercina": true` na nota.

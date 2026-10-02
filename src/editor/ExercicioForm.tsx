@@ -314,6 +314,20 @@ export function ExercicioForm({ onCarregar }: ExercicioFormProps) {
                       />
                     </label>
 
+                    <label>
+                      Tercina
+                      <input
+                        type="checkbox"
+                        checked={nota.tercina ?? false}
+                        onChange={(e) =>
+                          atualizarNota(indiceCompasso, indiceNota, {
+                            ...nota,
+                            tercina: e.target.checked,
+                          })
+                        }
+                      />
+                    </label>
+
                     {compasso.notas.length > 1 && (
                       <button
                         type="button"

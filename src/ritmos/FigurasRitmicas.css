@@ -1,0 +1,299 @@
+.ritmos {
+  --ritmo-nota: #e4572e;
+  --ritmo-nota-suave: rgba(228, 87, 46, 0.25);
+  --ritmo-batida: #2f6690;
+  --ritmo-fundo: var(--code-bg);
+
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+  text-align: left;
+  color: var(--text);
+}
+
+.ritmos__lead,
+.ritmos__desc {
+  max-width: 62ch;
+}
+
+.ritmos__abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.ritmos__abas button {
+  font: inherit;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 2px;
+  margin-bottom: -2px;
+  color: var(--text);
+  border-bottom: 3px solid transparent;
+}
+
+.ritmos__abas button[aria-selected='true'] {
+  color: var(--text-h);
+  border-bottom-color: var(--ritmo-nota);
+}
+
+.ritmos__painel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.ritmos__modos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ritmos__modos button {
+  font: inherit;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.ritmos__modos button[aria-pressed='true'] {
+  background: var(--text-h);
+  color: var(--bg);
+  border-color: var(--text-h);
+}
+
+.ritmos button:focus-visible,
+.ritmos input:focus-visible {
+  outline: 3px solid var(--ritmo-batida);
+  outline-offset: 2px;
+}
+
+.ritmos__desc {
+  margin: 14px 0 0;
+}
+
+.ritmos__leitura {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.ritmos__pos {
+  font-size: 3.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  min-width: 3ch;
+  color: var(--text-h);
+}
+
+.ritmos__nome {
+  margin-left: auto;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-h);
+}
+
+.ritmos__pista {
+  position: relative;
+  height: 64px;
+  background: var(--ritmo-fundo);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ritmos__divisor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 2px dashed var(--ritmo-batida);
+  opacity: 0.45;
+}
+
+.ritmos__bloco {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  background: var(--ritmo-nota-suave);
+  border: 2px solid var(--ritmo-nota);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background 0.08s;
+}
+
+.ritmos__bloco--ativo {
+  background: var(--ritmo-nota);
+  color: #fff;
+}
+
+.ritmos__bloco--pausa {
+  background: repeating-linear-gradient(135deg, transparent 0 6px, var(--border) 6px 12px);
+  border: 2px dashed var(--text);
+  color: var(--text);
+}
+
+.ritmos__bloco--pausa.ritmos__bloco--ativo {
+  background: repeating-linear-gradient(135deg, var(--border) 0 6px, transparent 6px 12px);
+  color: var(--text-h);
+}
+
+.ritmos__cursor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text-h);
+  pointer-events: none;
+}
+
+.ritmos__marcas {
+  position: relative;
+  height: 26px;
+  margin-top: 4px;
+}
+
+.ritmos__marca {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ritmos__marca--primeira {
+  transform: none;
+}
+
+.ritmos__marca--ultima {
+  transform: translateX(-100%);
+}
+
+.ritmos__marca--toca {
+  color: var(--ritmo-nota);
+  font-weight: 700;
+}
+
+.ritmos__legenda {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  min-height: 1.3em;
+}
+
+.ritmos__batidas {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ritmos__batida {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+}
+
+.ritmos__batida--ativa {
+  background: var(--ritmo-batida);
+}
+
+.ritmos__controles {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 16px;
+  align-items: center;
+}
+
+.ritmos__tocar {
+  grid-row: span 2;
+  min-width: 120px;
+  font: inherit;
+  font-weight: 700;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  background: var(--ritmo-nota);
+  color: #fff;
+  cursor: pointer;
+}
+
+.ritmos__tocar[data-tocando='true'] {
+  background: var(--text-h);
+  color: var(--bg);
+}
+
+.ritmos__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ritmos__linha input[type='range'] {
+  flex: 1;
+  min-width: 140px;
+  accent-color: var(--ritmo-batida);
+}
+
+.ritmos__bpm {
+  min-width: 7ch;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ritmos__dica {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.ritmos__tabela {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.ritmos__tabela th,
+.ritmos__tabela td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ritmos__atual td {
+  font-weight: 700;
+  color: var(--text-h);
+  background: var(--ritmo-fundo);
+}
+
+@media (max-width: 520px) {
+  .ritmos__pos {
+    font-size: 2.6rem;
+  }
+  .ritmos__controles {
+    grid-template-columns: 1fr;
+  }
+  .ritmos__tocar {
+    grid-row: auto;
+  }
+  .ritmos__nome {
+    margin-left: 0;
+    text-align: left;
+  }
+}

@@ -5,6 +5,7 @@ export interface Nota {
   casa: number | 'r'; // 'r' = pausa
   duracao: Duracao;
   pontuada?: boolean;
+  tercina?: boolean; // 3 notas no tempo de 2 da mesma figura
 }
 
 export interface Compasso {
